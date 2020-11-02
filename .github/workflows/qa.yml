@@ -2,7 +2,7 @@ name: QA
 
 on:
   workflow_run:
-    workflows: ["dev"]
+    workflows: ["Dev"]
     branches: [qa]
     types: 
       - completed
