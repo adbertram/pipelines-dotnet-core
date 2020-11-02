@@ -1,4 +1,4 @@
-name: .NET Core
+name: Prod
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ production ]
 
 env:
-  AZURE_WEBAPP_NAME: movie-app-dev    # set this to your application's name
+  AZURE_WEBAPP_NAME: movie-app-prod    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
 
 jobs:
