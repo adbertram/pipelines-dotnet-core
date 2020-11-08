@@ -15,7 +15,7 @@ variables:
   ## DatabaseName: '<Database name>'
   AdminUser: 'adam'
   AdminPassword: 'I like azure.' ## Don't do this
-  SQLFile: '$(Build.SourceDirectory)\new_sql_database.sql'
+  SQLFile: '.\new_sql_database.sql'
 
 steps:
 - task: CmdLine@1
