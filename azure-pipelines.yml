@@ -15,4 +15,4 @@ steps:
   inputs:
     filename: sqlcmd
     ## arguments: '-S $(ServerName) -U $(AdminUser) -P $(AdminPassword) -d $(DatabaseName) -i $(SQLFile)'
-    arguments: '-S appdbsrv -U adam -P "I like azure." -i "$(Build.SourceDirectory)\new_sql_database.sql"'
+    arguments: '-S appdbsrv -U adam -P "I like azure." -i "$(System.DefaultWorkingDirectory)\new_sql_database.sql"'
