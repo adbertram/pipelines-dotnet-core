@@ -1,25 +1,21 @@
-# ASP.NET Core
-
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - master
 
 variables:
-  AzureSubscription: ''
-  SqlServerName: ''
+  AzureSubscription: 'Adam the Automator (1427e7fb-a488-4ec5-be44-30ac10ca2e95)'
+  SqlServerName: 'appdbsrv'
 
 pool:
   vmImage: windows-latest
+
 steps:
 - task: AzurePowerShell@2
-  displayName: Azure PowerShell script: FilePath
   inputs:
     azureSubscription: '$(AzureSubscription)'
-    ScriptPath: '$(Build.SourcesDirectory)\scripts\SetAzureFirewallRule.ps1'
-    ScriptArguments: '$(SqlServerName)'
+    ScriptType: 'InlineScript'
+    Inline: |
+      $agentIP = (New-Object net.webclient).downloadstring("http://checkip.dyndns.com") -replace "[^\d\.]"
+      New-AzureRmSqlServerFirewallRule -ResourceGroupName 'Pluralsight-MSDevOpsSolutionsScirptsCourse' -ServerName 'appdbsrv' -FirewallRuleName 'temp' -StartIPAddress $agentIp -EndIPAddress $agentIp
     azurePowerShellVersion: LatestVersion
 
 - task: CmdLine@1
@@ -27,12 +23,13 @@ steps:
   inputs:
     filename: sqlcmd
     ## arguments: '-S $(ServerName) -U $(AdminUser) -P $(AdminPassword) -d $(DatabaseName) -i $(SQLFile)'
-    arguments: '-S appdbsrv -U adam -P "I like azure." -i "$(System.DefaultWorkingDirectory)\new_database.sql"'
+    arguments: '-S appdbsrv.database.windows.net -U adam -P "I like azure." -i "$(System.DefaultWorkingDirectory)\new_database.sql"'
 
 - task: AzurePowerShell@2
-  displayName: Azure PowerShell script: FilePath
   inputs:
     azureSubscription: '$(AzureSubscription)'
-    ScriptPath: '$(Build.SourcesDirectory)\scripts\RemoveAzureFirewallRule.ps1'
-    ScriptArguments: '$(SqlServerName)'
+    ScriptType: 'InlineScript'
+    Inline: |
+      $agentIP = (New-Object net.webclient).downloadstring("http://checkip.dyndns.com") -replace "[^\d\.]"
+      Remove-AzureRmSqlServerFirewallRule -ResourceGroupName 'Pluralsight-MSDevOpsSolutionsScirptsCourse' -ServerName 'appdbsrv' -FirewallRuleName 'temp'
     azurePowerShellVersion: LatestVersion
