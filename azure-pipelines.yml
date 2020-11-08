@@ -7,9 +7,6 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
 variables:
   ServerName: 'appdbsrv'
   ## DatabaseName: '<Database name>'
