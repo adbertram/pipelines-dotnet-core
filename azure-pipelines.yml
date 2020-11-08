@@ -9,18 +9,10 @@ trigger:
 
 pool:
   vmImage: windows-latest
-
-variables:
-  ServerName: 'appdbsrv'
-  ## DatabaseName: '<Database name>'
-  AdminUser: 'adam'
-  AdminPassword: 'I like azure.' ## Don't do this
-  SQLFile: '.\new_sql_database.sql'
-
 steps:
 - task: CmdLine@1
   displayName: Run Sqlcmd
   inputs:
     filename: sqlcmd
     ## arguments: '-S $(ServerName) -U $(AdminUser) -P $(AdminPassword) -d $(DatabaseName) -i $(SQLFile)'
-    arguments: '-S $(ServerName) -U $(AdminUser) -P "$(AdminPassword)" -i $(SQLFile)'
+    arguments: '-S appdbsrv -U adam -P "I like azure." -i "$(Build.SourceDirectory)\new_sql_database.sql"'
