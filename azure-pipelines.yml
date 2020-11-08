@@ -15,6 +15,11 @@ variables:
   SQLFile: 'new_sql_database.sql'
 
 steps:
+- task: PowerShell@2
+  displayName: Install the SQLCmd command
+  inputs:
+    targetType: 'inline'
+    script: 'Install-Module -Name SqlServer -Force -AllowClobber'
 - task: CmdLine@1
   displayName: Run Sqlcmd
   inputs:
