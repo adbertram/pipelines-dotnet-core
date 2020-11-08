@@ -18,7 +18,7 @@ steps:
     azurePowerShellVersion: LatestVersion
 
 - task: SqlAzureDacpacDeployment@1
-	displayName: Execute DACPAC package
+  displayName: Execute DACPAC package
   inputs:
     azureSubscription: '$(AzureSubscription)'
     AuthenticationType: 'server'
