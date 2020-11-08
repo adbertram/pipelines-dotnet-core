@@ -7,6 +7,9 @@
 trigger:
 - master
 
+pool:
+  vmImage: windows-latest
+
 variables:
   ServerName: 'appdbsrv'
   ## DatabaseName: '<Database name>'
@@ -23,6 +26,7 @@ steps:
 - task: CmdLine@1
   displayName: Run Sqlcmd
   inputs:
-    filename: Sqlcmd
+    ## filename: 'C:\Program Files\Microsoft SQL Server\110\Tools\Binn'
+    filename: sqlcmd
     ## arguments: '-S $(ServerName) -U $(AdminUser) -P $(AdminPassword) -d $(DatabaseName) -i $(SQLFile)'
     arguments: '-S $(ServerName) -U $(AdminUser) -P $(AdminPassword) -i $(SQLFile)'
