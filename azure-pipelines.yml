@@ -7,12 +7,32 @@
 trigger:
 - master
 
+variables:
+  AzureSubscription: ''
+  SqlServerName: ''
+
 pool:
   vmImage: windows-latest
 steps:
+- task: AzurePowerShell@2
+  displayName: Azure PowerShell script: FilePath
+  inputs:
+    azureSubscription: '$(AzureSubscription)'
+    ScriptPath: '$(Build.SourcesDirectory)\scripts\SetAzureFirewallRule.ps1'
+    ScriptArguments: '$(SqlServerName)'
+    azurePowerShellVersion: LatestVersion
+
 - task: CmdLine@1
   displayName: Run Sqlcmd
   inputs:
     filename: sqlcmd
     ## arguments: '-S $(ServerName) -U $(AdminUser) -P $(AdminPassword) -d $(DatabaseName) -i $(SQLFile)'
     arguments: '-S appdbsrv -U adam -P "I like azure." -i "$(System.DefaultWorkingDirectory)\new_database.sql"'
+
+- task: AzurePowerShell@2
+  displayName: Azure PowerShell script: FilePath
+  inputs:
+    azureSubscription: '$(AzureSubscription)'
+    ScriptPath: '$(Build.SourcesDirectory)\scripts\RemoveAzureFirewallRule.ps1'
+    ScriptArguments: '$(SqlServerName)'
+    azurePowerShellVersion: LatestVersion
