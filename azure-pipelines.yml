@@ -1,19 +1,19 @@
-##
-
 trigger:
 - master
 
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  buildConfiguration: 'Release'
-
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
-- task: PublishBuildArtifacts@1
+- task: AzureResourceManagerTemplateDeployment@3
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'Adam the Automator (1427e7fb-a488-4ec5-be44-30ac10ca2e95)'
+    subscriptionId: '1427e7fb-a488-4ec5-be44-30ac10ca2e95'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'Pluralsight-MSDevOpsSolutionsScirptsCourse'
+    location: 'East US'
+    templateLocation: 'URL of the file'
+    csmFileLink: 'https://raw.githubusercontent.com/adbertram/pipelines-dotnet-core/master/arm_templates/keyvault_armtemplate.json'
+    csmParametersFileLink: 'https://raw.githubusercontent.com/adbertram/pipelines-dotnet-core/master/arm_templates/kv_secret_parameters.json'
+    deploymentMode: 'Incremental'
