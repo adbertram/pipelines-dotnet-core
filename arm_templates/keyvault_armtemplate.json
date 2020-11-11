@@ -1,0 +1,52 @@
+{
+    "parameters": {
+        "vmPassword": {
+            "type": "string"
+        }
+    },
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "resources": [
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2019-09-01",
+            "name": "adbDemoKeyVault",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "enabledForDeployment": "false",
+                "enabledForDiskEncryption": "false",
+                "enabledForTemplateDeployment": "false",
+                "accessPolicies": [
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "ae615b7c-6c0b-4c20-a714-fbaf5b3cf382",
+                        "permissions": {
+                            "keys": ["all"],
+                            "secrets": ["all"],
+                            "certificates": ["all"],
+                            "storage": ["all"]
+                        }
+                    }
+                ],
+                "enableSoftDelete": "false",
+                "tenantId": "[subscription().tenantId]",
+                "sku": {
+                    "name": "Standard",
+                    "family": "A"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2019-09-01",
+            "name": "adbDemoKeyVault/mysecret",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults','adbDemoKeyVault')]"
+            ],
+            "properties": {
+                "value": "[parameters('vmPassword')]"
+            }
+        }
+    ]
+}
