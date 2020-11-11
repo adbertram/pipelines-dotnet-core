@@ -1,40 +1,17 @@
 trigger:
 - master
 
-variables:
-  AzureSubscription: 'Adam the Automator (1427e7fb-a488-4ec5-be44-30ac10ca2e95)'
-
 pool:
-  vmImage: windows-latest
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
 
 steps:
-- task: AzurePowerShell@2
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
+- task: PublishBuildArtifacts@1
   inputs:
-    azureSubscription: '$(AzureSubscription)'
-    ScriptType: 'InlineScript'
-    Inline: |
-      $agentIP = (New-Object net.webclient).downloadstring("http://checkip.dyndns.com") -replace "[^\d\.]"
-      New-AzureRmSqlServerFirewallRule -ResourceGroupName 'Pluralsight-MSDevOpsSolutionsScirptsCourse' -ServerName 'appdbsrv' -FirewallRuleName 'temp' -StartIPAddress $agentIp -EndIPAddress $agentIp
-    azurePowerShellVersion: LatestVersion
-
-- task: SqlAzureDacpacDeployment@1
-  displayName: Execute DACPAC package
-  inputs:
-    azureSubscription: '$(AzureSubscription)'
-    AuthenticationType: 'server'
-    ServerName: 'appdbsrv.database.windows.net'
-    DatabaseName: 'appdb'
-    SqlUsername: 'adam'
-    SqlPassword: 'I like azure.'
-    deployType: 'DacpacTask'
-    DeploymentAction: 'Publish'
-    DacpacFile: '$(System.DefaultWorkingDirectory)\AppDb.dacpac'
-
-- task: AzurePowerShell@2
-  inputs:
-    azureSubscription: '$(AzureSubscription)'
-    ScriptType: 'InlineScript'
-    Inline: |
-      $agentIP = (New-Object net.webclient).downloadstring("http://checkip.dyndns.com") -replace "[^\d\.]"
-      Remove-AzureRmSqlServerFirewallRule -ResourceGroupName 'Pluralsight-MSDevOpsSolutionsScirptsCourse' -ServerName 'appdbsrv' -FirewallRuleName 'temp'
-    azurePowerShellVersion: LatestVersion
+    PathtoPublish: '$(System.DefaultWorkingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
