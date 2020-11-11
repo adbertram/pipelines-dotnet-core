@@ -2,9 +2,9 @@ name: Prod
 
 on:
   push:
-    branches: [ production ]
+    branches: [ prod ]
   pull_request:
-    branches: [ production ]
+    branches: [ prod ]
 
 env:
   AZURE_WEBAPP_NAME: movie-app-prod    # set this to your application's name

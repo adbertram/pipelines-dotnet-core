@@ -2,8 +2,8 @@ name: QA
 
 on:
   workflow_run:
-    workflows: ["dev"]
-    branches: [qa]
+    workflows: ["Dev"]
+    branches: [master]
     types: 
       - completed
 
