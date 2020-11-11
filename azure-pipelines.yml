@@ -8,7 +8,7 @@ steps:
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'xxxx'
+    azureResourceManagerConnection: 'ARM'
     subscriptionId: '1427e7fb-a488-4ec5-be44-30ac10ca2e95'
     action: 'Create Or Update Resource Group'
     resourceGroupName: 'Pluralsight-MSDevOpsSolutionsScirptsCourse'
