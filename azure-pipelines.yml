@@ -2,7 +2,7 @@ trigger:
 - master
 
 variables:
-  AzureSubscription: 'Adam the Automator (1427e7fb-a488-4ec5-be44-30ac10ca2e95)'
+  AzureSubscription: 'PSCourse-ARM'
 
 pool:
   vmImage: windows-latest
