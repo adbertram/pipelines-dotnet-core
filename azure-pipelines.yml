@@ -1,19 +1,33 @@
 trigger:
 - master
 
+variables:
+  AzureSubscription: 'Adam the Automator (1427e7fb-a488-4ec5-be44-30ac10ca2e95)'
+
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: windows-latest
 
 steps:
-- task: AzureResourceManagerTemplateDeployment@3
+- task: AzurePowerShell@2
   inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'ARM'
-    subscriptionId: '1427e7fb-a488-4ec5-be44-30ac10ca2e95'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'Pluralsight-MSDevOpsSolutionsScirptsCourse'
-    location: 'East US'
-    templateLocation: 'URL of the file'
-    csmFileLink: 'https://raw.githubusercontent.com/adbertram/pipelines-dotnet-core/master/arm_templates/keyvault_armtemplate.json'
-    csmParametersFileLink: 'https://raw.githubusercontent.com/adbertram/pipelines-dotnet-core/master/arm_templates/kv_secret_parameters.json'
-    deploymentMode: 'Incremental'
+    azureSubscription: '$(AzureSubscription)'
+    ScriptType: 'InlineScript'
+    Inline: |
+      $agentIP = (New-Object net.webclient).downloadstring("http://checkip.dyndns.com") -replace "[^\d\.]"
+      New-AzureRmSqlServerFirewallRule -ResourceGroupName 'Pluralsight-MSDevOpsSolutionsScirptsCourse' -ServerName 'appdbsrv' -FirewallRuleName 'temp' -StartIPAddress $agentIp -EndIPAddress $agentIp
+    azurePowerShellVersion: LatestVersion
+
+- task: CmdLine@1
+  displayName: Run Sqlcmd
+  inputs:
+    filename: sqlcmd
+    arguments: '-S appdbsrv.database.windows.net -U adam -P "I like azure." -i "$(System.DefaultWorkingDirectory)\new_database.sql"'
+
+- task: AzurePowerShell@2
+  inputs:
+    azureSubscription: '$(AzureSubscription)'
+    ScriptType: 'InlineScript'
+    Inline: |
+      $agentIP = (New-Object net.webclient).downloadstring("http://checkip.dyndns.com") -replace "[^\d\.]"
+      Remove-AzureRmSqlServerFirewallRule -ResourceGroupName 'Pluralsight-MSDevOpsSolutionsScirptsCourse' -ServerName 'appdbsrv' -FirewallRuleName 'temp'
+    azurePowerShellVersion: LatestVersion
