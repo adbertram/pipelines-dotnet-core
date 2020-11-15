@@ -17,18 +17,11 @@ steps:
       New-AzureRmSqlServerFirewallRule -ResourceGroupName 'Pluralsight-MSDevOpsSolutionsScirptsCourse' -ServerName 'appdbsrv' -FirewallRuleName 'temp' -StartIPAddress $agentIp -EndIPAddress $agentIp
     azurePowerShellVersion: LatestVersion
 
-- task: SqlAzureDacpacDeployment@1
-  displayName: Execute DACPAC package
+- task: CmdLine@1
+  displayName: Run Sqlcmd
   inputs:
-    azureSubscription: '$(AzureSubscription)'
-    AuthenticationType: 'server'
-    ServerName: 'appdbsrv.database.windows.net'
-    DatabaseName: 'appdb'
-    SqlUsername: 'adam'
-    SqlPassword: 'I like azure.'
-    deployType: 'DacpacTask'
-    DeploymentAction: 'Publish'
-    DacpacFile: '$(System.DefaultWorkingDirectory)\AppDb.dacpac'
+    filename: sqlcmd
+    arguments: '-S appdbsrv.database.windows.net -U adam -P "I like azure." -i "$(System.DefaultWorkingDirectory)\new_database.sql"'
 
 - task: AzurePowerShell@2
   inputs:
